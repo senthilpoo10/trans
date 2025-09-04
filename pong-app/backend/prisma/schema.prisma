@@ -22,15 +22,15 @@ model User {
   googleId String?
   
   // 🆕 NEW LOBBY FIELDS
-  rank          String    @default("Rookie")        // Player rank (Rookie, Bronze, Silver, Gold, etc.)
-  lastActive    DateTime  @default(now())           // Last time user was active
-  status        UserStatus @default(OFFLINE)        // Current online status
-  bio           String?                             // Player biography
-  country       String?                             // Player's country
-  preferredPaddle String?                           // Favorite paddle type
-  joinedAt      DateTime  @default(now())           // When user joined
-  totalXP       Int       @default(0)               // Experience points
-  level         Int       @default(1)               // Player level
+  rank          String    @default("Rookie")
+  lastActive    DateTime  @default(now())
+  status        UserStatus @default(OFFLINE)
+  bio           String?
+  country       String?
+  preferredPaddle String?
+  joinedAt      DateTime  @default(now())
+  totalXP       Int       @default(0)
+  level         Int       @default(1)
 
   // Existing relationships
   friends  User[] @relation("UserFriends")
@@ -54,6 +54,9 @@ model User {
   
   // Tournament participation
   tournaments      TournamentParticipant[]
+  
+  // 🔥 FIXED: Matching relation name
+  wonTournaments   Tournament[] @relation("TournamentWinner")
   
   verificationCodes VerificationCode[]
   passwordResetToken PasswordResetToken?
@@ -249,8 +252,8 @@ model Tournament {
   name            String
   description     String?
   maxParticipants Int
-  entryFee        Int      @default(0) // XP cost to enter
-  prizePool       Int      @default(0) // XP prize
+  entryFee        Int      @default(0)
+  prizePool       Int      @default(0)
   
   status          TournamentStatus @default(UPCOMING)
   tournamentType  TournamentType   @default(SINGLE_ELIMINATION)
@@ -263,8 +266,10 @@ model Tournament {
   
   participants    TournamentParticipant[]
   matches         Match[]
+  
+  // 🔥 FIXED: Matching relation name
   winnerId        String?
-  winner          User?    @relation(fields: [winnerId], references: [id])
+  winner          User?    @relation("TournamentWinner", fields: [winnerId], references: [id])
 }
 
 enum TournamentStatus {
